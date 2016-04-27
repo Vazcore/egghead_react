@@ -27,16 +27,65 @@ class Nested extends React.Component {
                         {rows}
                     </tbody>
                 </table>
+                <hr />
+                <h4>Live JSX Compiler</h4>
+                <Compiler />
             </div>
 
         );
     }
 }
 
+class Compiler extends React.Component  {
+
+    constructor() {
+        super();
+        this.state = {
+            input: '',
+            output: '',
+            err: ''
+        };
+
+        this.update = this.update.bind(this);
+    }
+
+    update(e) {
+        let code = e.target.value;
+        try {
+            this.setState({
+                output: babel.transform(code, {
+                    stage: 0,
+                    loose: 'all'
+                    }).code,
+                err: ''
+            });
+        } catch(err) {
+            this.setState({err: err.message});
+        }
+    }
+
+    render () {
+        return (
+            <div className="form-group">
+                <header>{this.state.err}</header>
+                <div className="compiler_wrapper">
+                    <div className="code half_block">
+                        <textarea className="form-control"
+                                  onChange={this.update}
+                                  defaultValue={this.state.input}>
+                        </textarea>
+                    </div>
+                    <div className="output half_block">{this.state.output}</div>
+                </div>
+            </div>
+        );
+    }
+};
+
 const PersonRow = (props) => {
     return (
         <tr>
-            <td> {props.data.id} </td>
+            <td> {props.data.id}. </td>
             <td> {props.data.name} </td>
         </tr>
     );
