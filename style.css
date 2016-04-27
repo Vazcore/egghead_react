@@ -15,8 +15,15 @@ header {
 
 .compiler_wrapper {
     display: flex;
+    padding: 10px;
 }
 
 .half_block {
     width: 50%;
+    padding: 15px;
+}
+
+
+.half_block textarea {
+    height: 200px;
 }
