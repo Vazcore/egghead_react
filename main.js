@@ -4,6 +4,7 @@ import App from './App';
 import Basic from './Basic';
 import Mixin from './Mixin';
 import NumInput from './NumInput';
+import Nested from './Nested';
 
 ReactDom.render(
     <App name="Alexey" />,
@@ -31,4 +32,9 @@ ReactDom.render(
         <NumInput type="number" label="Age" val={26} />
     </div>,
     document.getElementById('num_input')
+);
+
+ReactDom.render(
+    <Nested />,
+    document.getElementById("nested")
 );
