@@ -1,4 +1,4 @@
-import { createStore } from 'redux';
+import { createStore, combineReducers } from 'redux';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
@@ -80,18 +80,7 @@ export function app() {
         </div>
     );
 
-    const render = () => {
-        ReactDOM.render(
-        <Counter value={store.getState()}
-                 onDecrement={()=>store.dispatch({type:"DECREMENT"})}
-                 onIncrement={()=>store.dispatch({type:"INCREMENT"})}/>,
-            document.getElementById("redux_app")
-        )
-    };
 
-
-    store.subscribe(render);
-    render();
 
     const beforeState = [];
     const afterState = [{id:1, title:"Make dinner", completed:false}];
@@ -117,12 +106,11 @@ export function app() {
         }
     };
 
-    const todoApp = (state = {}, action) => {
-        return {
-            todos: todosReducer(state.todos, action),
-            visibiityFilter: visibilityFilter(state.visibiityFilter, action)
-        };
-    };
+    const todoApp = combineReducers({
+        todosReducer,
+        visibilityFilter
+    });
+
 
     const todoStore = createStore(todoApp);
     console.log("Initial state: ", todoStore.getState());
@@ -133,5 +121,54 @@ export function app() {
     todoStore.dispatch({type: "ADD_TODO", id: 1, title:'Buy an appartment'});
     console.log("Current state: ", todoStore.getState());
 
+    let lastTodoId = 2;
+
+    class TodoApp extends React.Component {
+        render() {
+            return (
+                <div className="form-group row">
+                    <div className="col-xs-5">
+                        <input className="form-control" ref={ node => {
+                            this.todoTitle = node;
+                        } } />
+                    </div>
+                    <button className="btn btn-success col-xs-3" onClick={() => {
+                        todoStore.dispatch({
+                            type: "ADD_TODO",
+                            title: this.todoTitle.value,
+                            id: lastTodoId++
+                        });
+                        this.todoTitle.value = "";
+                    } }>Add</button>
+                    <ul className="col-xs-8">
+                        {this.props.todos.todosReducer.map(todo => {
+                            return (
+                                <li key={todo.id}>{todo.title}</li>
+                            );
+                        } )}
+                    </ul>
+                </div>
+            );
+        }
+    }
+
+
+    const render = () => {
+        ReactDOM.render(
+            <div>
+                <Counter value={store.getState()}
+                     onDecrement={()=>store.dispatch({type:"DECREMENT"})}
+                     onIncrement={()=>store.dispatch({type:"INCREMENT"})}/>
+                <hr />
+                <TodoApp todos={todoStore.getState()} />
+            </div>,
+            document.getElementById("redux_app")
+        )
+    };
+
+
+    store.subscribe(render);
+    todoStore.subscribe(render);
+    render();
 
 };
