@@ -28,6 +28,7 @@ ReactDom.render(
 ReactDom.render(
     <div>
         <h3>Reusable Inputs</h3>
+		<p className="caption">New Caption</p>
         <NumInput type="number" label="Red" />
         <NumInput type="range" />
         <NumInput type="range" label="Green" />
