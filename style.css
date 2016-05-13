@@ -24,6 +24,10 @@ header {
 }
 
 
+.caption {
+	font-weight: bold;
+}
+
 .half_block textarea {
     height: 200px;
 }
